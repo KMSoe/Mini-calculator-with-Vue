@@ -1,11 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Mini Calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
+
 <body>
-    
+    <div class="container" id="app">
+        <h1 class="my-4 text-center">My Calculator</h1>
+        <div class="row">
+            <div class="col-12">
+                <div class="card" style="background-color: #37474f;">
+                    <div class="card-body">
+                        <div
+                            class="border rounded text-white d-flex justify-content-end align-items-center bg-dark m-3 p-3">
+                            {{ answer }}
+                        </div>
+                        <div class="row p-3">
+                            <div class="col-6 mb-3">
+                                <input type="number" placeholder="Enter first number" class="form-control"
+                                    v-model="userInput.firstNumber" v-focus ref="firstNum">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <input type="number" v-model="userInput.secondNumber" placeholder="Enter second number"
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around mb-3">
+                            <div>
+                                <select name="" id="" class="form-control" v-model="userInput.operator">
+                                    <option value="choose">Choose an option</option>
+                                    <option value="+">+</option>
+                                    <option value="-">-</option>
+                                    <option value="*">*</option>
+                                    <option value="/">/</option>
+                                    <option value="%">%</option>
+                                </select>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary" @click="calculate">Cal</button>
+                            </div>
+                            <div>
+                                <button class="btn btn-danger" @click="clearFields">Clear</button>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mt-4 mb-3">
+                            <button class="btn btn-warning" @click="save">Save</button>
+                        </div>
+                        <div class="text-muted">
+                            <h5 class="text-white">History</h5>
+
+                            <ul class="list-group"  v-if="logs.length">
+                                <li class="list-group-item text-white" style="background-color: #37474f;" v-for="(log, i) in logs" :key="i">{{ log }}</li>
+                            </ul>
+                            <p class="py-3 text-center" v-else>
+                                No History
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="vue-2.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    userInput: {
+                        firstNumber: '',
+                        secondNumber: '',
+                        operator: 'choose',
+                    },
+                    answer: 0,
+                    logs: [],
+                }
+            },
+            methods: {
+                clearFields() {
+                    this.userInput.firstNumber = '';
+                    this.userInput.secondNumber = '';
+                    this.userInput.operator = 'choose';
+
+                    this.$refs.firstNum.focus();
+                },
+                cleanFrom() {
+                    this.answer = 0;
+                    this.clearFields();
+                },
+                calculate() {
+                    this.answer = `${this.userInput.firstNumber} ${this.userInput.operator} ${this.userInput.secondNumber} = ${this.operation()}`;
+
+                    this.clearFields();
+                },
+                save() {
+                    this.logs.push(this.answer);
+                    this.cleanFrom();
+                },
+                operation() {
+                    const firstNumber = parseInt(this.userInput.firstNumber);
+                    const secondNumber = parseInt(this.userInput.secondNumber);
+                    const operator = this.userInput.operator;
+
+                    switch (operator) {
+                        case '+':
+                            return firstNumber + secondNumber;
+                            break;
+                        case '-':
+                            return firstNumber - secondNumber;
+                            break;
+                        case '*':
+                            return firstNumber * secondNumber;
+                            break;
+                        case '/':
+                            return firstNumber / secondNumber;
+                            break;
+                        case '%':
+                            return firstNumber % secondNumber;
+                            break;
+                        default:
+                            return 'Error';
+                            break;
+                    }
+                }
+            },
+            directives: {
+                focus: {
+                    inserted(el) {
+                        el.focus();
+                    },
+                }
+            }
+        })
+    </script>
 </body>
+
 </html>
