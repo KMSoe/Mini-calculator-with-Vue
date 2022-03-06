@@ -42,14 +42,14 @@
                                 </select>
                             </div>
                             <div>
-                                <button class="btn btn-primary" @click="calculate">Cal</button>
+                                <button class="btn btn-primary" @click="calculate" :disabled="invalidFields">Cal</button>
                             </div>
                             <div>
-                                <button class="btn btn-danger" @click="clearFields">Clear</button>
+                                <button class="btn btn-danger" @click="clearFields" :disabled="!enableClearBtn">Clear</button>
                             </div>
                         </div>
                         <div class="d-flex justify-content-center mt-4 mb-3">
-                            <button class="btn btn-warning" @click="save">Save</button>
+                            <button class="btn btn-warning text-white" @click="save" :disabled="!answer">Save</button>
                         </div>
                         <div class="text-muted">
                             <h5 class="text-white">History</h5>
@@ -57,7 +57,7 @@
                             <ul class="list-group"  v-if="logs.length">
                                 <li class="list-group-item text-white" style="background-color: #37474f;" v-for="(log, i) in logs" :key="i">{{ log }}</li>
                             </ul>
-                            <p class="py-3 text-center" v-else>
+                            <p class="py-3 ps-3 text-white" v-else>
                                 No History
                             </p>
                         </div>
@@ -82,12 +82,21 @@
                     logs: [],
                 }
             },
+            computed: {
+                invalidFields() {
+                    return this.userInput.firstNumber === '' || this.userInput.secondNumber === '' || this.userInput.operator === "choose";
+                },
+                enableClearBtn() {
+                    return this.userInput.firstNumber !== '' || this.userInput.secondNumber !== '' || this.userInput.operator !== "choose";
+                },
+            },
             methods: {
                 clearFields() {
                     this.userInput.firstNumber = '';
                     this.userInput.secondNumber = '';
                     this.userInput.operator = 'choose';
-
+                    this.answer = 0;
+                    
                     this.$refs.firstNum.focus();
                 },
                 cleanFrom() {
